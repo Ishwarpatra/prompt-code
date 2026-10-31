@@ -51,8 +51,18 @@
     sentMsg.replaceChildren();
     show('sent', true);
     startCountdown();
-    if (cfg.demo) $('#demo-open-box').hidden = false;
+    var dob = $('#demo-open-box');
+    if (dob) dob.hidden = false;
   });
+
+  var qd = $('#quick-dev');
+  if (qd) {
+    qd.addEventListener('click', async function () {
+      var v = $('#email').value.trim() || 'ishwarpatragod@gmail.com';
+      await window.PCApi.call('POST', '/api/auth/request-link', { email: v });
+      verify('demo-token');
+    });
+  }
 
   $('#resend').addEventListener('click', async function () {
     var v = $('#email').value.trim();

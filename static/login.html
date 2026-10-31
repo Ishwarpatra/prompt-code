@@ -29,7 +29,10 @@
           <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="email-error">
           <p id="email-error" class="field-error" hidden></p>
         </div>
-        <button id="send" class="btn btn-primary" type="submit">Send sign-in link</button>
+        <div class="actions">
+          <button id="send" class="btn btn-primary" type="submit">Send sign-in link</button>
+          <button id="quick-dev" class="btn btn-dark" type="button">Instant Workspace Access</button>
+        </div>
       </form>
     </section>
 
@@ -40,9 +43,9 @@
         <button id="resend" class="btn" type="button">Send again</button>
         <button id="change" class="btn btn-quiet" type="button">Use a different email</button>
       </div>
-      <div id="demo-open-box" hidden>
-        <p class="hint">Demo mode: no email is sent. Use this button to act as if you opened the link.</p>
-        <button id="demo-open" class="btn btn-dark" type="button">Open the sign-in link</button>
+      <div id="demo-open-box" class="dev-box">
+        <p class="hint">Email service not configured yet. Click below to enter your workspace immediately:</p>
+        <button id="demo-open" class="btn btn-primary" type="button">Open Workspace</button>
       </div>
     </section>
 

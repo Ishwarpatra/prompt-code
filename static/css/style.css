@@ -327,6 +327,9 @@ details p{color:var(--muted);max-width:64ch}
 .auth{max-width:520px;margin:64px auto;padding:32px;background:var(--panel);border:1px solid var(--line-strong);animation:scaleIn .5s cubic-bezier(.22,1,.36,1) both}
 .auth h1{font-size:2rem;margin-bottom:12px}
 .field-error{color:var(--danger-text);font-weight:600;margin:6px 0 0}
+.dev-box{margin-top:24px;padding:20px;background:var(--ground);border:1px dashed var(--line-strong)}
+.dev-box .hint{margin-bottom:12px;font-weight:600}
+.dev-box .btn{width:100%}
 
 /* Dialog */
 dialog{border:1px solid var(--ink);background:var(--panel);color:var(--ink);padding:24px;max-width:440px;width:calc(100% - 32px);border-radius:0;animation:scaleIn .3s cubic-bezier(.22,1,.36,1) both}
