@@ -1,0 +1,8 @@
+target/
+agent/
+tests/
+.git/
+.env
+.env.*
+!.env.example
+node_modules/
