@@ -16,6 +16,9 @@ pub struct AppConfig {
     pub ollama_url: String,
     pub ollama_model: String,
     pub ollama_fallback: String,
+    pub max_concurrent_inferences: usize,
+    pub rate_limit_per_minute: usize,
+    pub queue_timeout_secs: u64,
 }
 
 impl Default for AppConfig {
@@ -58,6 +61,18 @@ impl AppConfig {
         let ollama_url = env::var("OLLAMA_URL").unwrap_or_else(|_| "http://127.0.0.1:11434".to_string());
         let ollama_model = env::var("OLLAMA_MODEL").unwrap_or_else(|_| "gemma3:4b".to_string());
         let ollama_fallback = env::var("OLLAMA_FALLBACK").unwrap_or_else(|_| "llama3.2:latest".to_string());
+        let max_concurrent_inferences = env::var("MAX_CONCURRENT_INFERENCES")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(1);
+        let rate_limit_per_minute = env::var("RATE_LIMIT_PER_MINUTE")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(10);
+        let queue_timeout_secs = env::var("QUEUE_TIMEOUT_SECS")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(15);
 
         Self {
             host,
@@ -74,6 +89,9 @@ impl AppConfig {
             ollama_url,
             ollama_model,
             ollama_fallback,
+            max_concurrent_inferences,
+            rate_limit_per_minute,
+            queue_timeout_secs,
         }
     }
 }

@@ -2,6 +2,7 @@ pub mod classifier;
 pub mod config;
 pub mod error;
 pub mod models;
+pub mod limiter;
 pub mod ollama;
 
 use axum::{
@@ -30,6 +31,8 @@ pub struct AppState {
     pub history: Arc<Mutex<HashMap<String, Vec<HistoryItem>>>>,
     pub pending_auth: Arc<Mutex<HashMap<String, String>>>,
     pub sessions: Arc<Mutex<HashMap<String, String>>>,
+    pub rate_limiter: Arc<limiter::RateLimiter>,
+    pub inference_queue: Arc<tokio::sync::Semaphore>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -186,6 +189,18 @@ async fn post_try(
         )));
     }
 
+    // Rate limiting check
+    let user_id_ref = "default_user";
+    if state.rate_limiter.check(
+        user_id_ref,
+        state.config.rate_limit_per_minute,
+        std::time::Duration::from_secs(60),
+    ).is_err() {
+        return Err(AppError::RateLimited(
+            "Rate limit reached. Please wait a moment before sending another request.",
+        ));
+    }
+
     let visitor_id = "default_visitor".to_string();
     let tries_left = {
         let mut guard = state.tries.lock().unwrap();
@@ -199,26 +214,57 @@ async fn post_try(
         state.config.free_try_limit.saturating_sub(*used)
     };
 
+    // Rate limiting check per client
+    let visitor_id_ref = "default_visitor";
+    if state.rate_limiter.check(
+        visitor_id_ref,
+        state.config.rate_limit_per_minute,
+        std::time::Duration::from_secs(60),
+    ).is_err() {
+        return Err(AppError::RateLimited(
+            "Rate limit reached. Please wait a moment before sending another request.",
+        ));
+    }
+
     let ptype = classifier::classify(idea);
 
-    let (prompt_text, used_model, provider_name, fallback_used) = match ollama::generate_prompt(
-        &state.config.ollama_url,
-        &state.config.ollama_model,
-        &state.config.ollama_fallback,
-        ptype.label(),
-        ptype.reason(),
-        idea,
-        None,
+    // Concurrency queue: acquire permit with timeout
+    let (prompt_text, used_model, provider_name, fallback_used) = match tokio::time::timeout(
+        std::time::Duration::from_secs(state.config.queue_timeout_secs),
+        state.inference_queue.acquire(),
     )
     .await
     {
-        Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
-        Err(_) => (
-            classifier::build_prompt(ptype, idea, None),
-            state.config.default_model.clone(),
-            "gemma-open-weight".to_string(),
-            false,
-        ),
+        Ok(Ok(_permit)) => {
+            match ollama::generate_prompt(
+                &state.config.ollama_url,
+                &state.config.ollama_model,
+                &state.config.ollama_fallback,
+                ptype.label(),
+                ptype.reason(),
+                idea,
+                None,
+            )
+            .await
+            {
+                Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
+                Err(_) => (
+                    classifier::build_prompt(ptype, idea, None),
+                    state.config.default_model.clone(),
+                    "gemma-open-weight".to_string(),
+                    false,
+                ),
+            }
+        }
+        _ => {
+            // Queue was saturated or timed out -> safe fallback
+            (
+                classifier::build_prompt(ptype, idea, None),
+                state.config.default_model.clone(),
+                "queue-timeout-fallback".to_string(),
+                true,
+            )
+        }
     };
 
     Ok(Json(ConversionResult {
@@ -252,6 +298,18 @@ async fn post_convert(
             "That is too long. Keep it under {} characters.",
             state.config.max_input_len
         )));
+    }
+
+    // Rate limiting check
+    let user_id_ref = "default_user";
+    if state.rate_limiter.check(
+        user_id_ref,
+        state.config.rate_limit_per_minute,
+        std::time::Duration::from_secs(60),
+    ).is_err() {
+        return Err(AppError::RateLimited(
+            "Rate limit reached. Please wait a moment before sending another request.",
+        ));
     }
 
     let ptype = if let Some(t) = payload.r#type.as_deref() {
@@ -291,23 +349,38 @@ async fn post_convert(
             (state.config.ollama_model.as_str(), state.config.ollama_fallback.as_str())
         };
 
-        match ollama::generate_prompt(
-            &state.config.ollama_url,
-            primary,
-            fallback,
-            ptype.label(),
-            ptype.reason(),
-            idea,
-            payload.instruction.as_deref(),
+        match tokio::time::timeout(
+            std::time::Duration::from_secs(state.config.queue_timeout_secs),
+            state.inference_queue.acquire(),
         )
         .await
         {
-            Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
-            Err(_) => (
+            Ok(Ok(_permit)) => {
+                match ollama::generate_prompt(
+                    &state.config.ollama_url,
+                    primary,
+                    fallback,
+                    ptype.label(),
+                    ptype.reason(),
+                    idea,
+                    payload.instruction.as_deref(),
+                )
+                .await
+                {
+                    Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
+                    Err(_) => (
+                        classifier::build_prompt(ptype, idea, payload.instruction.as_deref()),
+                        state.config.default_model.clone(),
+                        "open-weight".to_string(),
+                        false,
+                    ),
+                }
+            }
+            _ => (
                 classifier::build_prompt(ptype, idea, payload.instruction.as_deref()),
                 state.config.default_model.clone(),
-                "open-weight".to_string(),
-                false,
+                "queue-timeout-fallback".to_string(),
+                true,
             ),
         }
     };
@@ -397,6 +470,14 @@ async fn auth_request_link(
         ));
     }
 
+    // Rate limit auth requests: max 5 per 15 minutes per email
+    let auth_key = format!("auth:{}", email);
+    if state.rate_limiter.check(&auth_key, 5, std::time::Duration::from_secs(15 * 60)).is_err() {
+        return Err(AppError::RateLimited(
+            "Too many sign-in link requests. Please wait a few minutes before trying again.",
+        ));
+    }
+
     let mut guard = state.pending_auth.lock().unwrap();
     guard.insert("demo-token".to_string(), email.to_string());
 
@@ -466,6 +547,8 @@ async fn main() {
         history: Arc::new(Mutex::new(HashMap::new())),
         pending_auth: Arc::new(Mutex::new(HashMap::new())),
         sessions: Arc::new(Mutex::new(HashMap::new())),
+        rate_limiter: Arc::new(limiter::RateLimiter::new()),
+        inference_queue: Arc::new(tokio::sync::Semaphore::new(config.max_concurrent_inferences)),
     };
 
     let router = create_router(state);
@@ -499,11 +582,16 @@ mod tests {
                 ollama_url: "http://127.0.0.1:11434".to_string(),
                 ollama_model: "gemma3:4b".to_string(),
                 ollama_fallback: "llama3.2:latest".to_string(),
+                max_concurrent_inferences: 5,
+                rate_limit_per_minute: 100,
+                queue_timeout_secs: 15,
             },
             tries: Arc::new(Mutex::new(HashMap::new())),
             history: Arc::new(Mutex::new(HashMap::new())),
             pending_auth: Arc::new(Mutex::new(HashMap::new())),
             sessions: Arc::new(Mutex::new(HashMap::new())),
+            rate_limiter: Arc::new(limiter::RateLimiter::new()),
+            inference_queue: Arc::new(tokio::sync::Semaphore::new(5)),
         }
     }
 
@@ -653,5 +741,25 @@ mod tests {
             .unwrap();
         let res = app.oneshot(req).await.unwrap();
         assert_eq!(res.status(), StatusCode::BAD_REQUEST);
+    }
+    #[tokio::test]
+    async fn test_sliding_window_rate_limiter_and_queue() {
+        let limiter = limiter::RateLimiter::new();
+        assert!(limiter.check("client_a", 2, std::time::Duration::from_secs(10)).is_ok());
+        assert!(limiter.check("client_a", 2, std::time::Duration::from_secs(10)).is_ok());
+        assert!(limiter.check("client_a", 2, std::time::Duration::from_secs(10)).is_err());
+        assert!(limiter.check("client_b", 2, std::time::Duration::from_secs(10)).is_ok());
+
+        let queue = Arc::new(tokio::sync::Semaphore::new(1));
+        let permit1 = queue.clone().acquire_owned().await.unwrap();
+        let try_permit2 = tokio::time::timeout(
+            std::time::Duration::from_millis(10),
+            queue.clone().acquire_owned(),
+        )
+        .await;
+        assert!(try_permit2.is_err());
+        drop(permit1);
+        let permit2 = queue.acquire().await;
+        assert!(permit2.is_ok());
     }
 }
