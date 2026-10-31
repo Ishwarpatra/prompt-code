@@ -52,6 +52,11 @@ npm test
 ```
 These test the UI in demo mode. They do not test the Rust server.
 
+## Deployment
+Prompt Code is ready to deploy on **DigitalOcean**:
+- **DigitalOcean App Platform**: Fully managed PaaS with zero server maintenance. See [`.do/app.yaml`](.do/app.yaml) and the full [Deployment Guide](DEPLOYMENT.md).
+- **DigitalOcean Droplet**: Multi-stage [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml) ready for one-command Docker launch.
+
 ## Configuration
 Settings for the planned server are listed in `agent/skills/tools-config.md`. Keys go in environment variables, never in the repository. A `.env.example` file will be added with the server.
 
