@@ -13,6 +13,9 @@ pub struct AppConfig {
     pub max_input_len: usize,
     pub free_try_limit: u32,
     pub static_dir: String,
+    pub ollama_url: String,
+    pub ollama_model: String,
+    pub ollama_fallback: String,
 }
 
 impl Default for AppConfig {
@@ -52,6 +55,9 @@ impl AppConfig {
             .and_then(|l| l.parse().ok())
             .unwrap_or(3);
         let static_dir = env::var("STATIC_DIR").unwrap_or_else(|_| "static".to_string());
+        let ollama_url = env::var("OLLAMA_URL").unwrap_or_else(|_| "http://127.0.0.1:11434".to_string());
+        let ollama_model = env::var("OLLAMA_MODEL").unwrap_or_else(|_| "gemma3:4b".to_string());
+        let ollama_fallback = env::var("OLLAMA_FALLBACK").unwrap_or_else(|_| "llama3.2:latest".to_string());
 
         Self {
             host,
@@ -65,6 +71,9 @@ impl AppConfig {
             max_input_len,
             free_try_limit,
             static_dir,
+            ollama_url,
+            ollama_model,
+            ollama_fallback,
         }
     }
 }

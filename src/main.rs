@@ -2,6 +2,7 @@ pub mod classifier;
 pub mod config;
 pub mod error;
 pub mod models;
+pub mod ollama;
 
 use axum::{
     Json, Router,
@@ -199,7 +200,26 @@ async fn post_try(
     };
 
     let ptype = classifier::classify(idea);
-    let prompt_text = classifier::build_prompt(ptype, idea, None);
+
+    let (prompt_text, used_model, provider_name, fallback_used) = match ollama::generate_prompt(
+        &state.config.ollama_url,
+        &state.config.ollama_model,
+        &state.config.ollama_fallback,
+        ptype.label(),
+        ptype.reason(),
+        idea,
+        None,
+    )
+    .await
+    {
+        Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
+        Err(_) => (
+            classifier::build_prompt(ptype, idea, None),
+            state.config.default_model.clone(),
+            "gemma-open-weight".to_string(),
+            false,
+        ),
+    };
 
     Ok(Json(ConversionResult {
         id: None,
@@ -207,9 +227,9 @@ async fn post_try(
         recommended_type: ptype.id().to_string(),
         type_label: ptype.label().to_string(),
         reason: ptype.reason().to_string(),
-        model: state.config.default_model.clone(),
-        provider: "gemma-open-weight".to_string(),
-        fallback_used: false,
+        model: used_model,
+        provider: provider_name,
+        fallback_used,
         fallback_from: None,
         tries_left: Some(tries_left),
         demo: false,
@@ -244,9 +264,7 @@ async fn post_convert(
         classifier::classify(idea)
     };
 
-    let prompt_text = classifier::build_prompt(ptype, idea, payload.instruction.as_deref());
-
-    let (model_name, provider_name) = if let Some(uk) = payload.user_key.as_deref() {
+    let (prompt_text, model_name, provider_name, fallback_used) = if let Some(uk) = payload.user_key.as_deref() {
         if uk.len() < 16 {
             return Err(AppError::KeyInvalid(
                 "That API key was rejected. Check the key on the Models page, then try again.",
@@ -254,26 +272,44 @@ async fn post_convert(
         }
         let prov = payload.user_provider.as_deref().unwrap_or("openai");
         (
+            classifier::build_prompt(ptype, idea, payload.instruction.as_deref()),
             format!(
                 "{} (your key)",
                 if prov == "gemini" { "Gemini" } else { "OpenAI" }
             ),
             "external-provider-opt-in".to_string(),
+            false,
         )
-    } else if let Some(m) = payload.model.as_deref() {
-        if m != "auto" && m != "own" {
-            (m.to_string(), "open-weight".to_string())
-        } else {
-            (
-                state.config.default_model.clone(),
-                "gemma-open-weight".to_string(),
-            )
-        }
     } else {
-        (
-            state.config.default_model.clone(),
-            "gemma-open-weight".to_string(),
+        let (primary, fallback) = if let Some(m) = payload.model.as_deref() {
+            if m != "auto" && m != "own" {
+                (m, state.config.ollama_fallback.as_str())
+            } else {
+                (state.config.ollama_model.as_str(), state.config.ollama_fallback.as_str())
+            }
+        } else {
+            (state.config.ollama_model.as_str(), state.config.ollama_fallback.as_str())
+        };
+
+        match ollama::generate_prompt(
+            &state.config.ollama_url,
+            primary,
+            fallback,
+            ptype.label(),
+            ptype.reason(),
+            idea,
+            payload.instruction.as_deref(),
         )
+        .await
+        {
+            Ok((text, model, fb)) => (text, format!("{} (Ollama)", model), "ollama-local".to_string(), fb),
+            Err(_) => (
+                classifier::build_prompt(ptype, idea, payload.instruction.as_deref()),
+                state.config.default_model.clone(),
+                "open-weight".to_string(),
+                false,
+            ),
+        }
     };
 
     let id = format!(
@@ -310,7 +346,7 @@ async fn post_convert(
         reason: ptype.reason().to_string(),
         model: model_name,
         provider: provider_name,
-        fallback_used: false,
+        fallback_used,
         fallback_from: None,
         tries_left: None,
         demo: false,
@@ -456,6 +492,9 @@ mod tests {
                 max_input_len: 4000,
                 free_try_limit: 3,
                 static_dir: "static".to_string(),
+                ollama_url: "http://127.0.0.1:11434".to_string(),
+                ollama_model: "gemma3:4b".to_string(),
+                ollama_fallback: "llama3.2:latest".to_string(),
             },
             tries: Arc::new(Mutex::new(HashMap::new())),
             history: Arc::new(Mutex::new(HashMap::new())),
