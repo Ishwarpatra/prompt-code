@@ -2,7 +2,7 @@
    These read the files in ../../static and fail if a fixed problem comes back. */
 const fs = require('fs'), path = require('path'), assert = require('assert');
 const ROOT = path.join(__dirname, '..', '..', 'static');
-const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
+const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8').replace(/\r\n/g, '\n');
 const pages = fs.readdirSync(ROOT).filter(f => f.endsWith('.html'));
 const scripts = fs.readdirSync(path.join(ROOT, 'js')).map(f => 'js/' + f);
 const css = read('css/style.css');
