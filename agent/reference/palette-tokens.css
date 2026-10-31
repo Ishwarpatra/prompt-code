@@ -1,0 +1,48 @@
+/* Prompt Code palette tokens. Generated from the colour wheel in OKLCH; every pairing measured with the skill contrast checker.
+   Semantic names match css/style.css, so this block can replace its :root and dark blocks. Not applied yet (needs owner approval). */
+:root{
+  /* neutral */
+  --neutral-50:#F9FAFC; --neutral-100:#F3F5F7; --neutral-200:#E5E8EC; --neutral-300:#D5D9DE; --neutral-400:#AAB2BB; --neutral-500:#7C8590; --neutral-600:#616A74; --neutral-700:#49515C; --neutral-800:#323940; --neutral-900:#20242A; --neutral-950:#13161A;
+  /* accent */
+  --accent-50:#FFFAE9; --accent-100:#FFF5D3; --accent-200:#FFEDAD; --accent-300:#FFE279; --accent-400:#FFD400; --accent-500:#D9B400; --accent-600:#B59600; --accent-700:#8E7500; --accent-800:#695600; --accent-900:#4A3C00; --accent-950:#2F2600;
+  /* secondary */
+  --secondary-50:#F2F5FF; --secondary-100:#E5EAFF; --secondary-200:#CFD9FF; --secondary-300:#B2C0FF; --secondary-400:#91A3FF; --secondary-500:#7183F5; --secondary-600:#5867D6; --secondary-700:#434FAD; --secondary-800:#303981; --secondary-900:#1F2557; --secondary-950:#101533;
+  /* success */
+  --success-50:#E8FBEB; --success-100:#D5F5DA; --success-200:#B6EABF; --success-300:#8FD89E; --success-400:#62C37A; --success-500:#3AA85B; --success-600:#218A45; --success-700:#146D34; --success-800:#085023; --success-900:#093517; --success-950:#041E0B;
+  /* warning */
+  --warning-50:#FFF3E8; --warning-100:#FFE6D0; --warning-200:#FFD1A5; --warning-300:#FFB160; --warning-400:#EE921A; --warning-500:#CA7900; --warning-600:#A66200; --warning-700:#824C00; --warning-800:#613700; --warning-900:#412300; --warning-950:#271300;
+  /* danger */
+  --danger-50:#FFF2F0; --danger-100:#FFE4E0; --danger-200:#FFCDC6; --danger-300:#FFABA1; --danger-400:#FF7F73; --danger-500:#EC544B; --danger-600:#CC3430; --danger-700:#A12623; --danger-800:#791A18; --danger-900:#520E0C; --danger-950:#320605;
+
+  /* semantic tokens, light theme */
+  --ground:#F3F5F7;
+  --panel:#FFFFFF;
+  --ink:#13161A;
+  --muted:#49515C;
+  --line:#D5D9DE;
+  --line-strong:#7C8590;
+  --accent:#FFD400;
+  --accent-ink:#13161A;
+  --focus:#13161A;
+  --ok-bg:#D5F5DA;
+  --warn-bg:#FFE6D0;
+  --err-bg:#FFE4E0;
+  --danger-text:#A12623;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#13161A;
+    --panel:#20242A;
+    --ink:#F3F5F7;
+    --muted:#AAB2BB;
+    --line:#323940;
+    --line-strong:#7C8590;
+    --accent:#FFD400;
+    --accent-ink:#13161A;
+    --focus:#FFD400;
+    --ok-bg:#041E0B;
+    --warn-bg:#271300;
+    --err-bg:#320605;
+    --danger-text:#FFABA1;
+  }
+}

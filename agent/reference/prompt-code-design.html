@@ -1,0 +1,233 @@
+<!doctype html>
+<!-- AGENT-ONLY. Older mockup, superseded by the UI in static/. Kept for history. Not part of the Prompt Code app. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Code – Older interface mockup (superseded)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --ink:#14181F; --muted:#5B6472;
+  --line:#E3E6EB; --brand:#2F5BEA; --brand-ink:#FFFFFF; --brand-soft:#E8EEFF;
+  --ok:#0F7B4B; --ok-soft:#E4F5EC; --warn:#8A5A00; --warn-soft:#FFF3D6;
+  --err:#B42318; --err-soft:#FDECEA; --radius:12px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1218; --surface:#171B23; --ink:#EEF1F6; --muted:#9AA4B2;
+    --line:#2A303B; --brand:#7C9BFF; --brand-ink:#0F1218; --brand-soft:#1F2A4A;
+    --ok:#52D39A; --ok-soft:#123326; --warn:#F2C45B; --warn-soft:#3A2D0E;
+    --err:#FF8A80; --err-soft:#3A1714;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 64px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px}
+.logo svg{width:28px;height:28px}
+nav a{color:var(--muted);text-decoration:none;margin-left:20px;font-size:14px}
+nav a:hover{color:var(--ink)}
+h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px;font-weight:600}
+.sub{color:var(--muted);margin:0 0 28px;max-width:60ch}
+.board-title{margin:56px 0 12px;font-size:14px;color:var(--muted);font-weight:500}
+.app{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.app{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.panel h2{font-size:15px;margin:0 0 12px;font-weight:600}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+textarea,select,input{width:100%;font:inherit;color:var(--ink);background:var(--bg);
+  border:1px solid var(--line);border-radius:10px;padding:12px}
+textarea{min-height:190px;resize:vertical}
+textarea:focus,select:focus,input:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.row>div{flex:1 1 180px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.seg button{border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:10px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand);color:var(--ink)}
+.cta{margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:12px 20px;
+  font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.hint{color:var(--muted);font-size:13px}
+.rec{display:flex;gap:12px;align-items:flex-start;background:var(--brand-soft);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.rec svg{flex:none;width:20px;height:20px;margin-top:2px;color:var(--brand)}
+.rec p{margin:0;font-size:14px}
+.rec b{font-weight:600}
+pre.out{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;
+  font:13.5px/1.6 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap;min-height:190px;overflow-x:auto}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.chip.warn i{background:var(--warn)}
+.banner{display:flex;gap:12px;align-items:flex-start;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:14px}
+.banner.warn{background:var(--warn-soft);color:var(--ink)}
+.banner.err{background:var(--err-soft);color:var(--ink)}
+.banner svg{flex:none;width:20px;height:20px;margin-top:2px}
+.banner.warn svg{color:var(--warn)} .banner.err svg{color:var(--err)}
+.banner b{font-weight:600}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:28px;text-align:center;color:var(--muted);min-height:190px;display:grid;place-items:center}
+.history{margin-top:16px;display:grid;gap:8px}
+.history button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  color:var(--ink);font:inherit;font-size:14px;cursor:pointer;min-height:44px;display:flex;justify-content:space-between;gap:12px}
+.history span{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:860px){.grid3{grid-template-columns:1fr}}
+.tok{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.sw{width:28px;height:28px;border-radius:8px;border:1px solid var(--line)}
+.refs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:860px){.refs{grid-template-columns:1fr}}
+.refs a{color:var(--brand);text-decoration:none}
+.refs a:hover{text-decoration:underline}
+.refs p{margin:6px 0 0;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="hint">Older mockup, superseded. The app UI is in static/.</p>
+
+<header class="top">
+  <div class="logo">
+    <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect x="2" y="2" width="24" height="24" rx="7" fill="var(--brand)"/><path d="M9 9h10M9 14h7M9 19h10" stroke="var(--brand-ink)" stroke-width="2" stroke-linecap="round"/></svg>
+    Prompt Code
+  </div>
+  <nav aria-label="Primary"><a href="#">Converter</a><a href="#">History</a><a href="#">Models</a><a href="#">Docs</a></nav>
+</header>
+
+<h1>Turn a rough idea into a prompt that works</h1>
+<p class="sub">Paste what you want to build. Prompt Code picks the best prompt type for the job and writes it, using open-weight models by default.</p>
+
+<!-- BOARD 1: main screen -->
+<div class="board-title">Screen 1 · Converter (default state)</div>
+<div class="app">
+  <section class="panel" aria-labelledby="in-h">
+    <h2 id="in-h">Your idea</h2>
+    <label for="idea">Describe the task in your own words</label>
+    <textarea id="idea">I want a prompt that helps generate class designs for an inventory app, with attributes and relationships.</textarea>
+    <div class="row">
+      <div>
+        <label id="type-l">Output type</label>
+        <div class="seg" role="group" aria-labelledby="type-l">
+          <button aria-pressed="true">Auto-recommend</button>
+          <button aria-pressed="false">System</button>
+          <button aria-pressed="false">Power</button>
+          <button aria-pressed="false">Project</button>
+        </div>
+      </div>
+      <div>
+        <label for="model">Model</label>
+        <select id="model">
+          <option>Llama 3.1 8B (open-weight, default)</option>
+          <option>Qwen 2.5 7B (open-weight)</option>
+          <option>Mistral 7B (open-weight)</option>
+          <option>Bring your own key: OpenAI / Gemini</option>
+        </select>
+      </div>
+    </div>
+    <div class="cta">
+      <button class="btn">Convert prompt</button>
+      <span class="hint">Free tier · about 3 seconds</span>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="out-h">
+    <h2 id="out-h">Result</h2>
+    <div class="rec">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l2 5 5 .5-3.8 3.4 1.2 5.1L10 13.3 5.6 16l1.2-5.1L3 7.5 8 7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <p><b>Recommended: Role prompt.</b> Class design needs an expert persona and a fixed output format listing classes, attributes and relationships.</p>
+    </div>
+<pre class="out">You are a senior software architect.
+
+Task: design the classes for an inventory app.
+
+Return:
+1. Class list with one-line purpose
+2. Attributes with types
+3. Relationships (one-to-many, etc.)
+4. Open questions you need answered
+
+Ask before assuming anything unclear.</pre>
+    <div class="meta">
+      <span class="chip"><i></i>Llama 3.1 8B</span>
+      <div style="display:flex;gap:8px"><button class="btn ghost">Copy</button><button class="btn ghost">Refine</button></div>
+    </div>
+  </section>
+</div>
+
+<div class="history" aria-label="Recent conversions">
+  <button><span style="color:var(--ink)">Data handling audit checklist</span><span>Chain-of-thought · 2 min ago</span></button>
+  <button><span style="color:var(--ink)">Customer support chatbot rules</span><span>System · yesterday</span></button>
+</div>
+
+<!-- BOARD 2: fallback -->
+<div class="board-title">Screen 2 · Model fallback (primary model failed, backup answered)</div>
+<div class="app">
+  <section class="panel">
+    <h2>Your idea</h2>
+    <label>Describe the task in your own words</label>
+    <textarea aria-label="Idea (fallback state)">Audit how our app stores and shares user data and flag risks.</textarea>
+    <div class="cta"><button class="btn">Convert prompt</button></div>
+  </section>
+  <section class="panel">
+    <h2>Result</h2>
+    <div class="banner warn" role="status">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3l8 14H2L10 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div><b>Llama 3.1 8B timed out.</b> Switched to Qwen 2.5 7B. Your result is ready below.</div>
+    </div>
+    <pre class="out">Work through each data flow step by step.
+For each flow, state: source, storage, who can access it, and the risk.
+End with a ranked list of the three biggest risks.</pre>
+    <div class="meta"><span class="chip warn"><i></i>Qwen 2.5 7B (fallback)</span></div>
+  </section>
+</div>
+
+<!-- BOARD 3: errors + empty -->
+<div class="board-title">Screen 3 · Error and empty states</div>
+<div class="grid3">
+  <section class="panel">
+    <div class="banner err" role="alert">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 6v5M10 13.5v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div><b>All models are busy.</b> Your idea is saved. Try again in a minute or add your own API key.</div>
+    </div>
+    <button class="btn">Try again</button>
+  </section>
+  <section class="panel">
+    <div class="banner err" role="alert">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 6v5M10 13.5v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div><b>That API key was rejected.</b> Check the key in Models, then convert again.</div>
+    </div>
+    <button class="btn ghost">Open Models</button>
+  </section>
+  <section class="panel">
+    <div class="empty">Paste an idea on the left to see your prompt here.</div>
+  </section>
+</div>
+
+<!-- Tokens + references -->
+<div class="board-title">Design tokens</div>
+<div class="panel">
+  <div class="grid3">
+    <div class="tok"><span class="sw" style="background:var(--brand)"></span>Brand blue #2F5BEA · actions, focus</div>
+    <div class="tok"><span class="sw" style="background:var(--ink)"></span>Ink #14181F · text</div>
+    <div class="tok"><span class="sw" style="background:var(--bg)"></span>Ground #F7F8FA · page</div>
+  </div>
+  <p class="hint" style="margin-top:14px">Type: Inter for interface, JetBrains Mono for generated prompts. Radius 10–12px. Spacing in 4px steps. Light and dark themes. Touch targets 44px or larger.</p>
+</div>
+
+<div class="board-title">Reference sites worth studying (layout patterns only, no copying)</div>
+<div class="refs">
+  <div class="panel"><a href="https://linear.app" rel="noopener">linear.app</a><p>Quiet density, one accent color, strong keyboard focus.</p></div>
+  <div class="panel"><a href="https://vercel.com" rel="noopener">vercel.com</a><p>Generous whitespace and a clear two-column input/output rhythm.</p></div>
+  <div class="panel"><a href="https://www.raycast.com" rel="noopener">raycast.com</a><p>Command-style input and compact history lists.</p></div>
+</div>
+
+</div>
+</body>
+</html>

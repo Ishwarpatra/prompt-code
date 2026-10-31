@@ -1,0 +1,20 @@
+# dependencies and build output
+node_modules/
+target/
+
+# secrets and local data (keep .env.example, never .env)
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+
+# editors and operating system
+.DS_Store
+.vscode/
+.idea/
+
+
+# Added by cargo
+
+/target

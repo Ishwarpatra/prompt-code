@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert: Prompt Code</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="visually-hidden" role="status" aria-live="polite"></div>
+<div id="demo-slot"></div>
+<div class="frame">
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Prompt Code home"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#FFD400"/><path d="M7 8l5 5-5 5" fill="none" stroke="#14161A" stroke-width="2.4"/><path d="M14 19h6" stroke="#14161A" stroke-width="2.4"/></svg>Prompt Code</a>
+  <nav aria-label="Primary"><a href="app.html" aria-current="page">Convert</a><a href="history.html">History</a><a href="models.html">Models</a></nav>
+  <div class="who"><span id="who-email"></span><button id="signout" class="btn btn-quiet" type="button">Sign out</button></div>
+</header>
+
+<main id="main" hidden>
+  <div class="workspace">
+    <section class="pane" aria-labelledby="in-h">
+      <h1 id="in-h" class="page-title">Convert an idea</h1>
+      <form id="convert-form" novalidate>
+        <div class="field">
+          <label for="idea">Your idea</label>
+          <textarea id="idea" name="idea" rows="7" maxlength="4000" placeholder="Describe what you want to build or ask for"></textarea>
+        </div>
+        <fieldset class="field">
+          <legend>Prompt type</legend>
+          <div class="seg">
+            <label><input type="radio" name="type" value="auto" checked><span>Auto-recommend</span></label>
+            <label><input type="radio" name="type" value="system"><span>System</span></label>
+            <label><input type="radio" name="type" value="power"><span>Power</span></label>
+            <label><input type="radio" name="type" value="project"><span>Project</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="model">Model</label>
+          <select id="model" name="model">
+            <option value="auto">Automatic (Llama first, then backups)</option>
+            <option value="llama">Llama</option>
+            <option value="gemma">Gemma</option>
+            <option value="qwen">Qwen</option>
+            <option value="mistral">Mistral</option>
+            <option value="own">My own key (OpenAI or Gemini)</option>
+          </select>
+          <p class="hint">Open-weight models are the default. Add your own key on the Models page.</p>
+        </div>
+        <button id="convert" class="btn btn-primary" type="submit">Convert <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 10h13M11 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      </form>
+    </section>
+
+    <section class="pane" aria-labelledby="out-h">
+      <h2 id="out-h" class="page-title">Result</h2>
+      <div id="loading-slot"></div>
+      <div id="result" aria-busy="false">
+        <div class="empty">Your prompt will appear here. It is saved to History automatically.</div>
+      </div>
+    </section>
+  </div>
+</main>
+<noscript><p class="page">This page needs JavaScript.</p></noscript>
+</div>
+<script src="js/config.js" defer></script>
+<script src="js/types.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>

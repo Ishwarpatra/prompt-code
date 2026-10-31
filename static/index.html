@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Code: turn a rough idea into a prompt that works</title>
+<meta name="description" content="Paste a rough idea. Prompt Code picks the right prompt type and writes it, using open-weight models.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="visually-hidden" role="status" aria-live="polite"></div>
+<div id="demo-slot"></div>
+<div class="frame">
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Prompt Code home"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#FFD400"/><path d="M7 8l5 5-5 5" fill="none" stroke="#14161A" stroke-width="2.4"/><path d="M14 19h6" stroke="#14161A" stroke-width="2.4"/></svg>Prompt Code</a>
+  <nav aria-label="Primary">
+    <a href="#how">How it works</a>
+    <a href="#types">Prompt types</a>
+    <a href="#examples">Examples</a>
+    <a href="#resources">Resources</a>
+  </nav>
+  <div class="top-actions">
+    <a class="btn btn-quiet" href="login.html">Sign in</a>
+    <a class="btn btn-dark" href="app.html">Open app</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-h">
+    <h1 id="hero-h">Turn a rough idea into a prompt that works<span class="caret" aria-hidden="true"></span></h1>
+    <p class="hero-sub">Paste what you want to build. Prompt Code picks the right prompt type and writes it, using open-weight models.</p>
+
+    <form id="try-form" class="try" novalidate>
+      <label for="idea">Your idea</label>
+      <div class="try-row">
+        <textarea id="idea" name="idea" rows="5" maxlength="4000" placeholder="Example: a prompt that helps design the classes for an inventory app" aria-describedby="tries-note"></textarea>
+        <button id="convert" class="btn btn-primary" type="submit">Convert <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 10h13M11 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      </div>
+      <div class="chips" role="group" aria-label="Example ideas">
+        <button type="button" class="chip" data-example="class">Class design</button>
+        <button type="button" class="chip" data-example="audit">Data audit</button>
+        <button type="button" class="chip" data-example="chatbot">Chatbot</button>
+        <button type="button" class="chip" data-example="agent">Agent</button>
+        <button type="button" class="chip" data-example="project">Project</button>
+      </div>
+      <p id="tries-note" class="hint"></p>
+      <div id="try-result" tabindex="-1"></div>
+    </form>
+  </section>
+
+  <section class="section" id="how" aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <p class="lede">Three steps.</p>
+    <ol class="cells steps">
+      <li><h3>Paste your idea</h3><p>Write it the way you would say it. No special format.</p></li>
+      <li><h3>Get a recommendation</h3><p>Prompt Code works out what you are doing, suggests the prompt type that fits, and says why.</p></li>
+      <li><h3>Copy or refine</h3><p>Use the prompt as it is. With an account you can ask for changes and keep a history.</p></li>
+    </ol>
+  </section>
+
+  <section class="section" id="types" aria-labelledby="types-h">
+    <h2 id="types-h">The right prompt for each job</h2>
+    <p class="lede">Different tasks need different prompts. Pick one to see when it fits.</p>
+    <div class="types">
+      <ul class="type-list" id="type-list"></ul>
+      <div class="type-detail" id="type-detail"></div>
+    </div>
+    <noscript><p>Turn on JavaScript to browse prompt types.</p></noscript>
+  </section>
+
+  <section class="section" id="examples" aria-labelledby="ex-h">
+    <h2 id="ex-h">Examples</h2>
+    <p class="lede">A rough idea in, a structured prompt out.</p>
+    <div class="cells">
+      <article>
+        <span class="tag">Illustrative example</span>
+        <p class="idea">Help me design the classes for an inventory app.</p>
+        <p class="hint">Recommended: role prompt</p>
+        <pre>You are a senior software architect.
+Task: design the classes for an inventory app.
+Return: class list, attributes, relationships, open questions.
+Ask before assuming anything unclear.</pre>
+      </article>
+      <article>
+        <span class="tag">Illustrative example</span>
+        <p class="idea">Check how we handle user data.</p>
+        <p class="hint">Recommended: step-by-step checklist</p>
+        <pre>Go through each place user data is collected, stored or shared.
+For each, state: what, where, who can see it, and the risk.
+End with the three biggest risks, ranked.</pre>
+      </article>
+      <article>
+        <span class="tag">Illustrative example</span>
+        <p class="idea">A helper bot for my shop's customers.</p>
+        <p class="hint">Recommended: system prompt</p>
+        <pre>You are a friendly support assistant for a small online shop.
+Rules: answer only about orders, delivery and returns. Be brief and polite.
+If you are not sure, say so and offer to pass the question to a person.</pre>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="rel-h">
+    <h2 id="rel-h">Built to keep working</h2>
+    <p class="lede">Models can be busy. Prompt Code plans for that.</p>
+    <div class="cells">
+      <div><h3>Backups take over</h3><p>The plan: if one open-weight model is busy or down, the next one in the list answers.</p></div>
+      <div><h3>You see who answered</h3><p>Every result names the model that wrote it, and says when a backup was used.</p></div>
+      <div><h3>Your key stays yours</h3><p>The plan: a key you bring is used for your request only. The server is not meant to store it.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="account" aria-labelledby="acc-h">
+    <h2 id="acc-h">Try it free, sign in for more</h2>
+    <p class="lede">The free try is limited so that everyone gets a turn. Sign in with your email. No password: we send a one-time link.</p>
+    <div class="scroll">
+      <table>
+        <caption>What you get without and with an account</caption>
+        <thead><tr><th scope="col">Feature</th><th scope="col">Free try</th><th scope="col">With an account</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Convert an idea</th><td>A few tries</td><td>Yes</td></tr>
+          <tr><th scope="row">Refine a result</th><td>No</td><td>Yes</td></tr>
+          <tr><th scope="row">Saved history</th><td>No</td><td>Yes</td></tr>
+          <tr><th scope="row">Choose the model</th><td>No</td><td>Yes</td></tr>
+          <tr><th scope="row">Use your own key</th><td>No</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><a class="btn btn-primary" href="login.html">Sign in with email</a></p>
+  </section>
+
+  <section class="section" id="resources" aria-labelledby="res-h">
+    <h2 id="res-h">Resources</h2>
+    <p class="lede">Where these ideas come from. External sites; we are not affiliated.</p>
+    <ul class="cells">
+      <li><h3><a href="https://github.com/agentskills/agentskills" rel="noopener noreferrer">Agent Skills specification</a></h3><p>The open SKILL.md format for reusable agent instructions.</p></li>
+      <li><h3><a href="https://github.com/anthropics/skills" rel="noopener noreferrer">Example skills</a></h3><p>Public examples of how skills are written.</p></li>
+      <li><h3><a href="https://devdocs.io" rel="noopener noreferrer">DevDocs</a></h3><p>Fast, searchable documentation for many languages and tools.</p></li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="faq-h">
+    <h2 id="faq-h">Questions</h2>
+    <details><summary>Is it free?</summary><p>The free try needs no account. It is limited so that free model capacity is shared fairly.</p></details>
+    <details><summary>Do you keep my prompts?</summary><p>Free tries are not meant to be saved. With an account, your history is saved so you can reuse it, and you can delete any item or all of it.</p></details>
+    <details><summary>What if a model is down?</summary><p>The next model in the list is meant to answer, and the result says which one. If every model is busy, your idea stays in the box so you can try again.</p></details>
+    <details><summary>Can I use my own model key?</summary><p>Yes, with an account. The key is meant to be used for your request only and not stored by the server.</p></details>
+    <details><summary>Why no password?</summary><p>You sign in with a one-time link sent to your email. There is no password to forget or leak.</p></details>
+  </section>
+
+  <section class="section final" aria-labelledby="end-h">
+    <h2 id="end-h">Write your first prompt</h2>
+    <p class="lede">Paste an idea and see the prompt it makes.</p>
+    <button id="start-example" class="btn btn-primary" type="button">Start with an example</button>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Prompt Code</span>
+  <span><a href="login.html">Sign in</a><a href="#resources">Resources</a></span>
+</footer>
+</div>
+<script src="js/config.js" defer></script>
+<script src="js/types.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/landing.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Models: Prompt Code</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="visually-hidden" role="status" aria-live="polite"></div>
+<div id="demo-slot"></div>
+<div class="frame">
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Prompt Code home"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#FFD400"/><path d="M7 8l5 5-5 5" fill="none" stroke="#14161A" stroke-width="2.4"/><path d="M14 19h6" stroke="#14161A" stroke-width="2.4"/></svg>Prompt Code</a>
+  <nav aria-label="Primary"><a href="app.html">Convert</a><a href="history.html">History</a><a href="models.html" aria-current="page">Models</a></nav>
+  <div class="who"><span id="who-email"></span><button id="signout" class="btn btn-quiet" type="button">Sign out</button></div>
+</header>
+
+<main id="main" hidden>
+  <div class="page">
+    <h1 class="page-title">Models</h1>
+    <p class="lede">Open-weight models answer by default. If one is busy or down, the next one in the list is meant to take over.</p>
+    <div id="models-status"></div>
+    <p id="models-loading" class="empty" role="status">Loading models…</p>
+    <ol id="model-list" class="model-list" aria-label="Models in the order they are tried"></ol>
+
+    <section class="panel-box" aria-labelledby="key-h">
+      <h2 id="key-h">Use your own key</h2>
+      <p>Bring an OpenAI or Gemini key. It is sent with each request and used once. The server is not meant to store it. This browser tab keeps it until you forget it or close the tab.</p>
+      <form id="key-form" novalidate>
+        <div class="field">
+          <label for="provider">Provider</label>
+          <select id="provider" name="provider">
+            <option value="openai">OpenAI</option>
+            <option value="gemini">Gemini</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="apikey">API key</label>
+          <input id="apikey" name="apikey" type="password" autocomplete="off" spellcheck="false" aria-describedby="key-msg">
+          <p id="key-msg" class="hint"></p>
+        </div>
+        <div class="actions">
+          <button id="key-save" class="btn btn-primary" type="submit">Use this key in this tab</button>
+          <button id="key-forget" class="btn" type="button" hidden>Forget key</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>
+<noscript><p class="page">This page needs JavaScript.</p></noscript>
+</div>
+<script src="js/config.js" defer></script>
+<script src="js/types.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/models.js" defer></script>
+</body>
+</html>

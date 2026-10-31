@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in: Prompt Code</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="visually-hidden" role="status" aria-live="polite"></div>
+<div id="demo-slot"></div>
+<div class="frame">
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Prompt Code home"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#FFD400"/><path d="M7 8l5 5-5 5" fill="none" stroke="#14161A" stroke-width="2.4"/><path d="M14 19h6" stroke="#14161A" stroke-width="2.4"/></svg>Prompt Code</a>
+  <div class="top-actions"><a class="btn btn-quiet" href="index.html">Back to home</a></div>
+</header>
+
+<main id="main">
+  <div class="auth">
+    <section id="state-request" aria-labelledby="req-h">
+      <h1 id="req-h">Sign in to Prompt Code</h1>
+      <p>Enter your email. We will send a one-time link. No password. If you are new, the same link creates your account.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="email-error">
+          <p id="email-error" class="field-error" hidden></p>
+        </div>
+        <button id="send" class="btn btn-primary" type="submit">Send sign-in link</button>
+      </form>
+    </section>
+
+    <section id="state-sent" aria-labelledby="sent-h" hidden>
+      <h1 id="sent-h">Check your email</h1>
+      <p>We sent a sign-in link to <strong id="sent-to"></strong>. It works once and expires in <span id="link-minutes">15</span> minutes. Check your spam folder if you do not see it.</p>
+      <div class="actions">
+        <button id="resend" class="btn" type="button">Send again</button>
+        <button id="change" class="btn btn-quiet" type="button">Use a different email</button>
+      </div>
+      <div id="demo-open-box" hidden>
+        <p class="hint">Demo mode: no email is sent. Use this button to act as if you opened the link.</p>
+        <button id="demo-open" class="btn btn-dark" type="button">Open the sign-in link</button>
+      </div>
+    </section>
+
+    <section id="state-verify" aria-labelledby="ver-h" hidden>
+      <h1 id="ver-h">Signing you in</h1>
+      <p>One moment.</p>
+    </section>
+
+    <section id="state-error" aria-labelledby="err-h" hidden>
+      <h1 id="err-h">That link did not work</h1>
+      <div id="error-box"></div>
+      <p>Links expire after a short time and work only once. Enter your email to get a new one.</p>
+      <button id="again" class="btn btn-primary" type="button">Get a new link</button>
+    </section>
+  </div>
+</main>
+</div>
+<script src="js/config.js" defer></script>
+<script src="js/types.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/login.js" defer></script>
+</body>
+</html>

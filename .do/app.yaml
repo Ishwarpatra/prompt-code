@@ -1,0 +1,27 @@
+name: prompt-code
+region: lon
+services:
+  - name: web
+    dockerfile_path: Dockerfile
+    source_dir: /
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: HOST
+        value: "0.0.0.0"
+      - key: PORT
+        value: "8080"
+      - key: DEFAULT_MODEL
+        value: "gemma-4-31b-it"
+      - key: FALLBACK_MODEL
+        value: "gemma-4-26b-a4b-it"
+      - key: STATIC_DIR
+        value: "/app/static"
+      - key: GEMMA_API_BASE
+        value: "https://api.gemma.google/v1"
+      - key: GEMMA_API_KEY
+        type: SECRET
+        scope: RUN_TIME

@@ -1,0 +1,11 @@
+{
+  "name": "prompt-code-ui-tests",
+  "private": true,
+  "description": "Tests for the static UI. Dev only. Not shipped with the app.",
+  "scripts": {
+    "test": "node static.test.js && node demo.test.js && node pages.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.0"
+  }
+}

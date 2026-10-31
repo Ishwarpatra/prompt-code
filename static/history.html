@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History: Prompt Code</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="live" class="visually-hidden" role="status" aria-live="polite"></div>
+<div id="demo-slot"></div>
+<div class="frame">
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Prompt Code home"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#FFD400"/><path d="M7 8l5 5-5 5" fill="none" stroke="#14161A" stroke-width="2.4"/><path d="M14 19h6" stroke="#14161A" stroke-width="2.4"/></svg>Prompt Code</a>
+  <nav aria-label="Primary"><a href="app.html">Convert</a><a href="history.html" aria-current="page">History</a><a href="models.html">Models</a></nav>
+  <div class="who"><span id="who-email"></span><button id="signout" class="btn btn-quiet" type="button">Sign out</button></div>
+</header>
+
+<main id="main" hidden>
+  <div class="page">
+    <div class="toolbar">
+      <h1 class="page-title">History</h1>
+      <button id="delete-all" class="btn btn-danger" type="button" hidden>Delete all history</button>
+    </div>
+    <div id="status-box"></div>
+    <div id="loading" class="empty" role="status">Loading history…</div>
+    <ul id="hist" class="hist"></ul>
+    <div id="empty" class="empty" hidden>No saved prompts yet. <a href="app.html">Convert an idea</a> and it will appear here.</div>
+  </div>
+</main>
+
+<dialog id="confirm" aria-labelledby="confirm-h">
+  <h2 id="confirm-h">Delete this?</h2>
+  <p id="confirm-text"></p>
+  <div class="actions">
+    <button id="confirm-cancel" class="btn" type="button">Keep it</button>
+    <button id="confirm-ok" class="btn btn-danger" type="button">Delete</button>
+  </div>
+</dialog>
+<noscript><p class="page">This page needs JavaScript.</p></noscript>
+</div>
+<script src="js/config.js" defer></script>
+<script src="js/types.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/api.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/history.js" defer></script>
+</body>
+</html>
